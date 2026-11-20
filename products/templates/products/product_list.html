@@ -1,0 +1,76 @@
+
+{% extends 'products/base.html' %}
+
+{% block title %}
+    ShopSphere | Products
+{% endblock %}
+
+{% block content %}
+
+<h2>Shop by Category</h2>
+
+<div>
+
+    <a href="{% url 'product_list' %}">
+        All Products
+    </a>
+
+    |
+
+    {% for category in categories %}
+
+        <a href="{% url 'product_list' %}?category={{ category.id }}">
+            {{ category.name }}
+        </a>
+
+        |
+
+    {% empty %}
+
+        <p>No categories available.</p>
+
+    {% endfor %}
+
+</div>
+
+<hr>
+
+<h2>Our Products</h2>
+
+    {% for product in products %}
+
+<div>
+
+    {% if product.image %}
+
+        <img
+            src="{{ product.image.url }}"
+            alt="{{ product.name }}"
+            width="250"
+        >
+
+    {% endif %}
+
+    <h3>
+        <a href="{% url 'product_detail' product.id %}">
+            {{ product.name }}
+        </a>
+    </h3>
+
+    <p>{{ product.description }}</p>
+
+    <p>Price: Rs. {{ product.price }}</p>
+
+    <p>Available Stock: {{ product.stock }}</p>
+
+</div>
+
+        <hr>
+
+    {% empty %}
+
+        <p>No products are currently available.</p>
+
+    {% endfor %}
+
+{% endblock %}

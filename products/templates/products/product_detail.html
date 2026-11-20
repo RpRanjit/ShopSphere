@@ -1,0 +1,28 @@
+{% extends 'products/base.html' %} {% block title %} {{ product.name }} |
+ShopSphere {% endblock %} {% block content %} {% if product.image %}
+
+<img src="{{ product.image.url }}" alt="{{ product.name }}" width="400" />
+
+{% endif %}
+
+<h2>{{ product.name }}</h2>
+
+<p>{{ product.description }}</p>
+
+<h3>Price: Rs. {{ product.price }}</h3>
+
+<p>Available Stock: {{ product.stock }}</p>
+
+{% if product.stock > 0 %}
+
+<p>In Stock</p>
+
+{% else %}
+
+<p>Out of Stock</p>
+
+{% endif %}
+
+<a href="{% url 'product_list' %}"> Back to Products </a>
+
+{% endblock %}
