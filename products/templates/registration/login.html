@@ -1,0 +1,31 @@
+{% extends 'products/base.html' %}
+
+{% block title %}
+    Login | ShopSphere
+{% endblock %}
+
+{% block content %}
+
+    <h2>Login to ShopSphere</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        {% if next %}
+            <input
+                type="hidden"
+                name="next"
+                value="{{ next }}"
+            >
+        {% endif %}
+
+        <button type="submit">
+            Login
+        </button>
+
+    </form>
+
+{% endblock %}

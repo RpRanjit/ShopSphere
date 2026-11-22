@@ -1,0 +1,23 @@
+{% extends "products/base.html" %}
+
+{% block title %}
+Register | ShopSphere
+{% endblock %}
+
+{% block content %}
+
+<h2>Create Your ShopSphere Account</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Register</button>
+</form>
+<p>
+    Alreday Have an account?
+    <a href="{% url 'login' %}">Login here</a>
+</p>
+
+{% endblock %}

@@ -6,7 +6,76 @@
 {% endblock %}
 
 {% block content %}
+<h2>Search Products</h2>
 
+<form method="GET" action="{% url 'product_list' %}">
+
+    <input
+        type="text"
+        name="q"
+        placeholder="Search products..."
+        value="{{ search_query|default:'' }}"
+    >
+
+    {% if selected_category %}
+     <input
+     type="hidden"
+     name="category"
+     value="{{ selected_category }}"
+     >
+     {% endif %}
+    <button type="submit">
+        Search
+    </button>
+
+</form>
+
+<h2>Sort Products</h2>
+
+<form methos="GET" action="{% url 'product_list' %}">
+
+   {% if search_query %}
+   <input
+   type="hidden"
+   name="q"
+   value="{{ search_query }}">
+   {% endif %}
+
+   {% if selected_category %}
+   <input
+   type="hidden"
+   name="category"
+   value="{{ selected_category }}">
+   {% endif %}
+
+   <select name="sort">
+
+        <option value="name"
+            {% if sort_by == 'name' %}selected{% endif %}>
+            Name: A to Z
+        </option>
+
+        <option value="price_low"
+            {% if sort_by == 'price_low' %}selected{% endif %}>
+            Price: Low to High
+        </option>
+
+        <option value="price_high"
+            {% if sort_by == 'price_high' %}selected{% endif %}>
+            Price: High to Low
+        </option>
+
+        <option value="newest"
+            {% if sort_by == 'newest' %}selected{% endif %}>
+            Newest First
+        </option>
+
+    </select>
+
+    <button type="submit">
+        Sort
+    </button>
+</form>
 <h2>Shop by Category</h2>
 
 <div>
