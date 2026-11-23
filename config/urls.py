@@ -22,8 +22,14 @@ from products import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    # for account register, logi, logout
     path('accounts/register/', views.register, name='register'),
     path('accounts/', include('django.contrib.auth.urls')),
+
+    # for cart 
+    path('cart/', include('cart.urls')),
+
     path('', include('products.urls')),
 ]
 
