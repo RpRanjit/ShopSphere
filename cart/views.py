@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from products.models import Product
+from django.views.decorators.http import require_POST
 
 # Create your views here.
 
@@ -57,3 +58,46 @@ def cart_detail(request):
     }
 
     return render(request, 'cart/cart_detail.html', context)
+
+@require_POST
+def update_cart(request, product_id):
+
+    product = get_object_or_404(
+        Product,
+        id=product_id,
+        is_active=True
+    )
+
+    quantity = int(request.POST.get('quantity', 1))
+
+    if quantity < 1:
+        quantity = 1
+    if quantity > product.stock:
+        quantity = product.stock
+
+    cart = request.session.get('cart',{})
+
+    product_id=str(product.id)
+
+    if quantity == 0:
+        cart.pop(product_id, None)
+    else:
+        cart[product_id] = quantity
+
+    request.session['cart'] = cart
+
+    return redirect('cart_detail')
+
+
+@require_POST
+def remove_from_cart(request, product_id):
+
+    cart = request.session.get('cart', {})
+
+    product_id = str(product_id)
+
+    cart.pop(product_id, None)
+
+    request.session['cart'] = cart
+
+    return redirect('cart_detail')
