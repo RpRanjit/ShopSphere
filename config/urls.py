@@ -19,12 +19,14 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from products import views
+from cart import views as cart_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     # for account register, logi, logout
     path('accounts/register/', views.register, name='register'),
+    path('accounts/login/', cart_views.customer_login, name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
 
     # for cart 
