@@ -32,6 +32,8 @@ urlpatterns = [
     # for cart 
     path('cart/', include('cart.urls')),
 
+    path('orders/', include('orders.urls')),
+
     path('', include('products.urls')),
 ]
 

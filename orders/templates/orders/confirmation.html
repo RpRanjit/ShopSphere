@@ -1,0 +1,30 @@
+{% extends 'products\base.html' %}
+
+{% block content %}
+
+<h1>Order Confirmed!</h1>
+
+<p>Thank you for your order.</p>
+
+<p>Order Number: #{{ order.id }}</p>
+
+<p>Status: {{ order.get_status_display }}</p>
+
+<p>Email: {{ order.email }}</p>
+
+<h2>Items Ordered</h2>
+
+{% for item in order.items.all %}
+    <p>
+        {{ item.product_name }}
+        - Quantity: {{ item.quantity }}
+        - Price: Rs. {{ item.price }}
+        - Subtotal: Rs. {{ item.subtotal }}
+    </p>
+{% endfor %}
+
+<h3>Total: Rs. {{ order.total_amount }}</h3>
+
+<a href="{% url 'product_list' %}">Continue Shopping</a>
+
+{% endblock %}

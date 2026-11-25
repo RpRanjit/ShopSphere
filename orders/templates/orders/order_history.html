@@ -1,0 +1,43 @@
+{% extends 'products\base.html' %}
+
+{% block content %}
+
+<h1>My Orders</h1>
+
+{% if orders %}
+
+    {% for order in orders %}
+
+        <div class="order-card">
+
+            <h3>Order #{{ order.id }}</h3>
+
+            <p>
+                Date: {{ order.created_at|date:"d M Y, h:i A" }}
+            </p>
+
+            <p>
+                Total Amount: Rs. {{ order.total_amount }}
+            </p>
+
+            <p>
+                Status: {{ order.get_status_display }}
+            </p>
+
+            <a href="{% url 'order_confirmation' order.id %}">
+                View Order Details
+            </a>
+
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+{% else %}
+
+    <p>You haven't placed any orders yet.</p>
+
+{% endif %}
+
+{% endblock %}
