@@ -16,18 +16,43 @@ def add_to_cart(request, product_id):
         is_active=True 
     )
 
-    cart = request.session.get('cart', {})
+    if product.stock <= 0:
+        return redirect('product_list')
 
-    product_id = str(product.id)
+    if request.user.is_authenticated:
 
-    if product_id in cart:
+        customer_cart, created = Cart.objects.get_or_create(
+        user=request.user
+        )
 
-        cart[product_id] += 1
-    
+        cart_item, created = CartItem.objects.get_or_create(
+        cart=customer_cart,
+        product=product,
+        defaults={'quantity': 1}
+        )
+
+        if not created:
+            cart_item.quantity = min(
+                cart_item.quantity + 1,
+                product.stock
+            )
+
+            cart_item.save()
+
     else:
-        cart[product_id] = 1
 
-    request.session['cart'] = cart
+        cart = request.session.get('cart', {})
+
+        product_id = str(product.id)
+
+        current_quantity = cart.get(product_id, 0)
+
+        cart[product_id] = min(
+            current_quantity + 1,
+            product.stock
+        )
+
+        request.session['cart'] = cart
 
     return redirect('product_list')
 
@@ -98,45 +123,80 @@ def cart_detail(request):
 @require_POST
 def update_cart(request, product_id):
 
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (TypeError, ValueError):
+        return redirect('cart_detail')
+
     product = get_object_or_404(
         Product,
         id=product_id,
         is_active=True
     )
 
-    quantity = int(request.POST.get('quantity', 1))
-
-    if quantity < 1:
-        quantity = 1
-    if quantity > product.stock:
-        quantity = product.stock
-
-    cart = request.session.get('cart',{})
-
-    product_id=str(product.id)
-
-    if quantity == 0:
-        cart.pop(product_id, None)
+    if product.stock <= 0:
+        quantity = 0
     else:
-        cart[product_id] = quantity
+        quantity = max(1, min(quantity, product.stock))
 
-    request.session['cart'] = cart
+    if request.user.is_authenticated:
+
+        customer_cart, created = Cart.objects.get_or_create(
+            user=request.user
+        )
+
+        if quantity == 0:
+            CartItem.objects.filter(
+                cart=customer_cart,
+                product=product
+            ).delete()
+
+        else:
+            CartItem.objects.update_or_create(
+                cart=customer_cart,
+                product=product,
+                defaults={'quantity': quantity}
+            )
+
+    else:
+
+        cart = request.session.get('cart', {})
+        product_id = str(product.id)
+
+        if quantity == 0:
+            cart.pop(product_id, None)
+        else:
+            cart[product_id] = quantity
+
+        request.session['cart'] = cart
 
     return redirect('cart_detail')
-
 
 @require_POST
 def remove_from_cart(request, product_id):
 
-    cart = request.session.get('cart', {})
+    if request.user.is_authenticated:
 
-    product_id = str(product_id)
+        try:
+            customer_cart = request.user.cart
 
-    cart.pop(product_id, None)
+            CartItem.objects.filter(
+                cart=customer_cart,
+                product_id=product_id
+            ).delete()
+        except Cart.DoesNotExist:
+            pass
+    else:
 
-    request.session['cart'] = cart
+        cart = request.session.get('cart', {})
 
+        product_id=str(product_id)
+
+        cart.pop(product_id, None)
+
+        request.session['cart'] = cart
     return redirect('cart_detail')
+
 
 
 
