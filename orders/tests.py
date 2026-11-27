@@ -2,6 +2,8 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.urls import reverse
 from decimal import Decimal
+
+from django.core import mail
 # Create your tests here.
 
 from .models import Order
@@ -101,16 +103,16 @@ class CheckOutTest(TestCase):
             username='checkoutcustomer',
             password="testpassword123"
         )
-
-        response = self.client.post(
-            reverse('checkout'),
-            {
-             'full_name': 'Test Customer',
-             'email': 'test@example.com',
-             'phone': '9800000000',
-             'shipping_address': 'Test Address, Nepal',   
-            }
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse('checkout'),
+                {
+                'full_name': 'Test Customer',
+                'email': 'test@example.com',
+                'phone': '9800000000',
+                'shipping_address': 'Test Address, Nepal',   
+                }
+            )
 
         self.assertEqual(response.status_code, 302)
 
@@ -127,6 +129,10 @@ class CheckOutTest(TestCase):
         self.assertEqual(product.stock, 3)
 
         self.assertEqual(cart.items.count(), 0)
+
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn('Order Confirmation', mail.outbox[0].subject)
+        self.assertEqual(mail.outbox[0].to, [order.email])
 
 
 
@@ -248,3 +254,6 @@ class CheckOutTest(TestCase):
         self.assertEqual(product.stock, 5)
 
         self.assertEqual(cart.items.count(), 1)
+
+
+
