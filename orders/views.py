@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from .forms import CheckoutForm
 
+from .email import send_order_confirmation_email
+
 from decimal import Decimal
 from cart.models import Cart
 
@@ -82,6 +84,11 @@ def checkout(request):
 
                     # Clear the customer's database cart
                     customer_cart.items.all().delete()
+
+                    transaction.on_commit(
+                        lambda: send_order_confirmation_email(order),
+                        robust=True
+                    )
 
                 return redirect(
                     'order_confirmation',

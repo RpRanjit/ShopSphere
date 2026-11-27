@@ -60,6 +60,10 @@
             Total: Rs. {{ total }}
         </h3>
 
+        <a href="{% url 'checkout' %}">
+            Proceed to Checkout
+        </a>
+
     {% else %}
 
         <p>Your cart is currently empty.</p>

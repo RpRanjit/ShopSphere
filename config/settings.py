@@ -134,3 +134,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'product_list'
 
 LOGOUT_REDIRECT_URL = 'product_list'
+
+
+# for Email Configurations (development)
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'ShopSphere <noreply@shopsphere.local>'
