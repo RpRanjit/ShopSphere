@@ -1,74 +1,136 @@
-{% extends 'products/base.html' %}
+{% extends 'products/base.html' %}{% load static %}
 {% block title %}
     ShopSphere | Products
 {%endblock %}
 {% block content %}
-<h2>Search Products</h2>
 
-<form method="GET" action="{% url 'product_list' %}" class="search-form">
-  <input
-    type="text"
-    name="q"
-    placeholder="Search products..."
-    value="{{ search_query|default:'' }}"
-  />
+<section class="hero-slider">
+  <div class="slider-container">
 
-  {% if selected_category %}
-  <input type="hidden" name="category" value="{{ selected_category }}" />
-  {% endif %}
-  <button type="submit">Search</button>
-</form>
+    <div class="slides-track">
+      <div class="slide active">
+        <div class="slide-content">
+          <span class="slide-label">
+            WELCOME TO SHOPSPHERE
+          </span>
+          <h2>Discover Your Next Favourite</h2>
+          <p>Explore quanity product at amazing prices.</p>
+          <a href="#products" class="slide-button">Shop Now</a>
+        </div>
+      </div>
 
-<h2>Sort Products</h2>
+      <div class="slide">
+        <div class="slide-content">
+          <span class="slide-label">LATEST COLLECTION</span>
+          <h2>Upgrade Your Technology</h2>
+          <p>Find the technology that makes life better.</p>
+          <a href="#products" class="slide-button">Explore Products</a>
+        </div>
+      </div>
 
-<form methos="GET" action="{% url 'product_list' %}" class="sort-form">
-  {% if search_query %}
-  <input type="hidden" name="q" value="{{ search_query }}" />
-  {% endif %} {% if selected_category %}
-  <input type="hidden" name="category" value="{{ selected_category }}" />
-  {% endif %}
+      <div class="slide">
+        <div class="slide-content">
+          <span class="slide-label">SPECIAL OFFERS</span>
+          <h2>Something Special Awaits</h2>
+          <p>Discover products worth shopping for.</p>
+          <a href="#products" class="slide-button">Shop Today</a>
+        </div>
+      </div>
 
-  <select name="sort">
-    <option value="name" {% if sort_by == "name" %}selected{% endif %}>
-      Name: A to Z
-    </option>
+    </div>
+    <button class="slider-arrow prev" type="button">&#10094;</button>
+    <button class="slider-arrow next" type="button">&#10095;</button>
 
-    <option
-      value="price_low"
-      {%
-      if
-      sort_by=""
-      ="price_low"
-      %}selected{%
-      endif
-      %}
-    >
-      Price: Low to High
-    </option>
+    <div class="slider-dots">
+      <button class="dot active" type="button"></button>
+      <button class="dot" type="button"></button>
+      <button class="dot" type="button"></button>
+    </div>
 
-    <option
-      value="price_high"
-      {%
-      if
-      sort_by=""
-      ="price_high"
-      %}selected{%
-      endif
-      %}
-    >
-      Price: High to Low
-    </option>
+  </div>
 
-    <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>
-      Newest First
-    </option>
-  </select>
+</section>
+<div class="product-section" id="products">
 
-  <button type="submit">Sort</button>
-</form>
-<h2>Shop by Category</h2>
+<div class="products-heading">
+    <div>
+        <span class="section-label">OUR COLLECTION</span>
+        <h2>Explore Our Products</h2>
+        <p>Discover quality products selected for you.</p>
+    </div>
+</div>
 
-<div class="category-list">
+<section class="shop-controls">
+
+  <div class="shop-search">
+    <h2>Search Products</h2>
+
+    <form method="GET" action="{% url 'product_list' %}" class="search-form">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search products..."
+        value="{{ search_query|default:'' }}"
+      />
+
+      {% if selected_category %}
+      <input type="hidden" name="category" value="{{ selected_category }}" />
+      {% endif %}
+      <button type="submit">Search</button>
+    </form>
+
+  </div>
+
+  <div class="shop-sort">
+    <h2>Sort Products</h2>
+
+    <form methos="GET" action="{% url 'product_list' %}" class="sort-form">
+      {% if search_query %}
+      <input type="hidden" name="q" value="{{ search_query }}" />
+      {% endif %} {% if selected_category %}
+      <input type="hidden" name="category" value="{{ selected_category }}" />
+      {% endif %}
+
+      <select name="sort">
+        <option value="name" {% if sort_by == "name" %}selected{% endif %}>
+          Name: A to Z
+        </option>
+
+        <option
+          value="price_low"
+          {% if sort_by == "price_low"%}
+          selected
+          {%endif%}
+        >
+          Price: Low to High
+        </option>
+
+        <option
+          value="price_high"
+          {% if sort_by == "price_high" %}
+          selected
+          {%endif%}
+        >
+          Price: High to Low
+        </option>
+
+        <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>
+          Newest First
+        </option>
+      </select>
+
+      <button type="submit">Sort</button>
+    </form>
+  </div>
+
+  <div class="shop_categories">
+    <div class="category-heading">
+      <h3>Browse Categories</h3>
+      <span>Find what you're looking for</span>
+    </div>
+
+    <div class="category-pills">
+      <div class="category-list">
   <a href="{% url 'product_list' %}"> All Products </a>
 
   | {% for category in categories %}
@@ -84,44 +146,92 @@
   {% endfor %}
 </div>
 
+    </div>
+  </div>
+</section>
+
+
+
+<h2>Shop by Category</h2>
+
+
 <hr />
 
 <h2>Our Products</h2>
 <div class="product-grid">
   {% for product in products %}
 
-  <div class="product-card">
-    {% if product.image %}
 
-    <img
-      class="product-image"
-      src="{{ product.image.url }}"
-      alt="{{ product.name }}"
-      width="250"
-    />
+<div class="product-card">
 
-    {% endif %}
+    <div class="product-image-wrapper">
+        {% if product.image %}
+            <img
+                class="product-image"
+                src="{{ product.image.url }}"
+                alt="{{ product.name }}"
+            />
+        {% else %}
+            <div class="product-image-placeholder">
+                No Image Available
+            </div>
+        {% endif %}
 
-    <h3>
-      <a href="{% url 'product_detail' product.id %}"> {{ product.name }} </a>
-    </h3>
+        {% if product.stock > 0 %}
+            <span class="product-stock-badge in-stock">
+                In Stock
+            </span>
+        {% else %}
+            <span class="product-stock-badge out-of-stock">
+                Out of Stock
+            </span>
+        {% endif %}
+    </div>
 
-    <p>{{ product.description }}</p>
+    <div class="product-card-content">
 
-    <p>Price: Rs. {{ product.price }}</p>
+        <h3 class="product-name">
+            <a href="{% url 'product_detail' product.id %}">
+                {{ product.name }}
+            </a>
+        </h3>
 
-    <p>Available Stock: {{ product.stock }}</p>
+        <p class="product-description">
+            {{ product.description }}
+        </p>
+        <a href="{% url 'product_detail' product.id %}" class="read-more-link">
+          Read More →
+        </a>
 
-    <form
-      class="add-to-cart-form"
-      method="POST"
-      action="{% url 'add_to_cart' product.id %}"
-    >
-      {% csrf_token %}
-      <button type="submit" class="add-to-cart-button">Add to Cart</button>
-    </form>
-  </div>
-  <hr />
+        <p class="product-price">
+            Rs. {{ product.price }}
+        </p>
+
+        <p class="product-stock">
+            {{ product.stock }} units available
+        </p>
+
+        <form
+            class="add-to-cart-form"
+            method="POST"
+            action="{% url 'add_to_cart' product.id %}"
+        >
+            {% csrf_token %}
+            <button
+                type="submit"
+                class="add-to-cart-button"
+                {% if product.stock <= 0 %}disabled{% endif %}
+            >
+                {% if product.stock > 0 %}
+                    Add to Cart
+                {% else %}
+                    Out of Stock
+                {% endif %}
+            </button>
+        </form>
+
+    </div>
+</div>
 
   {% empty %}
 
@@ -129,5 +239,6 @@
 
   {% endfor %}
 </div>
-
+</div>
+<script src="{% static 'products/js/hero-slider.js' %}"></script>
 {% endblock %}
