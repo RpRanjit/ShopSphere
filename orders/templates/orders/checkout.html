@@ -1,29 +1,83 @@
+
 {% extends 'products/base.html' %}
 
+{% block title %}
+Checkout | ShopSphere
+{% endblock %}
+
 {% block content %}
-<div class="checkout-container">
-<h1>Checkout</h1>
-<h2 class="checkout-section-title">Your Order</h2>
 
-{% for item in checkout_items %}
-    <p>
-        {{ item.product.name }}
-        - Quantity: {{ item.quantity }}
-        - Subtotal: Rs. {{ item.subtotal }}
-    </p>
-{% empty %}
-    <p>Your cart is empty.</p>
-{% endfor %}
+<div class="checkout-page">
 
-<h3>Total: Rs. {{ total_amount }}</h3>
+    <div class="checkout-heading">
+        <span>ALMOST THERE</span>
+        <h1>Complete Your Order</h1>
+        <p>Review your items and provide your details to place your order.</p>
+    </div>
 
-<form method="POST" class="checkout-form">
-    {% csrf_token %}
+    <div class="checkout-layout">
 
-    {{ form.as_p }}
+        <!-- Customer information -->
+        <div class="checkout-form-panel">
 
-    <button type="submit">Place Order</button>
-</form>
+            <h2>Customer Information</h2>
+            <p class="checkout-panel-description">
+                Please provide your details for order confirmation.
+            </p>
+
+            <form method="POST" class="checkout-form">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <button type="submit" class="place-order-button">
+                    Place Order →
+                </button>
+            </form>
+
+        </div>
+
+        <!-- Order summary -->
+        <aside class="checkout-summary">
+
+            <h2>Your Order</h2>
+
+            <div class="checkout-items">
+
+                {% for item in checkout_items %}
+
+                <div class="checkout-item">
+
+                    <div class="checkout-item-details">
+                        <h3>{{ item.product.name }}</h3>
+                        <span>Quantity: {{ item.quantity }}</span>
+                    </div>
+
+                    <strong>Rs. {{ item.subtotal }}</strong>
+
+                </div>
+
+                {% empty %}
+
+                <p>Your cart is empty.</p>
+
+                {% endfor %}
+
+            </div>
+
+            <div class="checkout-total">
+                <span>Total Amount</span>
+                <strong>Rs. {{ total_amount }}</strong>
+            </div>
+
+            <p class="checkout-secure-note">
+                Thank you for shopping with ShopSphere.
+            </p>
+
+        </aside>
+
+    </div>
+
+</div>
 
 {% endblock %}
-</div>

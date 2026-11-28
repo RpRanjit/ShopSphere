@@ -1,30 +1,92 @@
-{% extends 'products\base.html' %}
+
+{% extends 'products/base.html' %}
+
+{% block title %}
+Order Confirmed | ShopSphere
+{% endblock %}
 
 {% block content %}
 
-<h1>Order Confirmed!</h1>
+<div class="order-confirmation-page">
 
-<p>Thank you for your order.</p>
+    <div class="confirmation-success">
 
-<p>Order Number: #{{ order.id }}</p>
+        <div class="success-icon">
+            ✓
+        </div>
 
-<p>Status: {{ order.get_status_display }}</p>
+        <span class="confirmation-label">ORDER SUCCESSFUL</span>
 
-<p>Email: {{ order.email }}</p>
+        <h1>Thank You for Your Order!</h1>
 
-<h2>Items Ordered</h2>
+        <p>
+            Your order has been successfully placed.
+            We appreciate you shopping with ShopSphere.
+        </p>
 
-{% for item in order.items.all %}
-    <p>
-        {{ item.product_name }}
-        - Quantity: {{ item.quantity }}
-        - Price: Rs. {{ item.price }}
-        - Subtotal: Rs. {{ item.subtotal }}
-    </p>
-{% endfor %}
+    </div>
 
-<h3>Total: Rs. {{ order.total_amount }}</h3>
+    <div class="confirmation-card">
 
-<a href="{% url 'product_list' %}">Continue Shopping</a>
+        <div class="confirmation-order-header">
+            <div>
+                <span>ORDER NUMBER</span>
+                <h2>#{{ order.id }}</h2>
+            </div>
+
+            <div class="order-status">
+                {{ order.get_status_display }}
+            </div>
+        </div>
+
+        <div class="confirmation-email">
+            <span>Confirmation Email</span>
+            <strong>{{ order.email }}</strong>
+        </div>
+
+        <div class="confirmation-items">
+
+            <h2>Order Summary</h2>
+
+            {% for item in order.items.all %}
+
+            <div class="confirmation-item">
+
+                <div class="confirmation-item-details">
+                    <h3>{{ item.product_name }}</h3>
+                    <span>Quantity: {{ item.quantity }}</span>
+                </div>
+
+                <div class="confirmation-item-pricing">
+                    <span>Rs. {{ item.price }} each</span>
+                    <strong>Rs. {{ item.subtotal }}</strong>
+                </div>
+
+            </div>
+
+            {% empty %}
+
+            <p>No order items found.</p>
+
+            {% endfor %}
+
+        </div>
+
+        <div class="confirmation-total">
+            <span>Total Amount Paid / Due</span>
+            <strong>Rs. {{ order.total_amount }}</strong>
+        </div>
+
+        <div class="confirmation-actions">
+
+            <a href="{% url 'product_list' %}" class="confirmation-shop-button">
+                Continue Shopping →
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}

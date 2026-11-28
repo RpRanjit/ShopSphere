@@ -1,33 +1,84 @@
+
 {% extends 'products/base.html' %}
+
 {% block title %}
 {{ product.name }} | ShopSphere
 {% endblock %}
+
 {% block content %}
+
 <div class="product-detail">
-{% if product.image %}
-<img src="{{ product.image.url }}" alt="{{ product.name }}" width="400" />
 
-{% endif %}
+    <!-- Product image -->
+    <div class="detail-image-wrapper">
+        {% if product.image %}
+            <img
+                src="{{ product.image.url }}"
+                alt="{{ product.name }}"
+                class="detail-product-image"
+            />
+        {% else %}
+            <div class="detail-image-placeholder">
+                No Image Available
+            </div>
+        {% endif %}
+    </div>
 
-<h2>{{ product.name }}</h2>
+    <!-- Product information -->
+    <div class="detail-product-info">
 
-<p>{{ product.description }}</p>
+        <span class="detail-category-label">
+            SHOPSPHERE COLLECTION
+        </span>
 
-<h3>Price: Rs. {{ product.price }}</h3>
+        <h1>{{ product.name }}</h1>
 
-<p>Available Stock: {{ product.stock }}</p>
+        <p class="detail-description">
+            {{ product.description }}
+        </p>
 
-{% if product.stock > 0 %}
+        <h2 class="detail-product-price">
+            Rs. {{ product.price }}
+        </h2>
 
-<p>In Stock</p>
+        {% if product.stock > 0 %}
+            <div class="detail-stock in-stock">
+                <span class="stock-dot"></span>
+                In Stock — {{ product.stock }} units available
+            </div>
+        {% else %}
+            <div class="detail-stock out-of-stock">
+                <span class="stock-dot"></span>
+                Currently Out of Stock
+            </div>
+        {% endif %}
 
-{% else %}
+        <div class="detail-divider"></div>
 
-<p>Out of Stock</p>
+        {% if product.stock > 0 %}
+            <form
+                class="detail-cart-form"
+                method="POST"
+                action="{% url 'add_to_cart' product.id %}"
+            >
+                {% csrf_token %}
 
-{% endif %}
+                <button type="submit" class="detail-add-button">
+                    Add to Cart
+                </button>
+            </form>
+        {% else %}
+            <button class="detail-add-button" disabled>
+                Out of Stock
+            </button>
+        {% endif %}
 
-<a href="{% url 'product_list' %}"> Back to Products </a>
+        <a href="{% url 'product_list' %}" class="back-to-products">
+            ← Continue Shopping
+        </a>
 
-{% endblock %}\
+    </div>
+
 </div>
+
+{% endblock %}

@@ -1,43 +1,106 @@
-{% extends 'products\base.html' %}
+
+{% extends 'products/base.html' %}
+
+{% block title %}
+My Orders | ShopSphere
+{% endblock %}
 
 {% block content %}
 
-<h1>My Orders</h1>
+<div class="order-history-page">
 
-{% if orders %}
+    <div class="order-history-heading">
 
-    {% for order in orders %}
+        <div>
+            <span class="order-history-label">YOUR SHOPPING ACTIVITY</span>
+            <h1>My Orders</h1>
+            <p>Track your purchases and revisit your previous orders.</p>
+        </div>
 
-        <div class="order-card">
+        <a href="{% url 'product_list' %}" class="order-history-shop-button">
+            Continue Shopping →
+        </a>
 
-            <h3>Order #{{ order.id }}</h3>
+    </div>
 
-            <p>
-                Date: {{ order.created_at|date:"d M Y, h:i A" }}
-            </p>
+    {% if orders %}
 
-            <p>
-                Total Amount: Rs. {{ order.total_amount }}
-            </p>
+    <div class="order-history-list">
 
-            <p>
-                Status: {{ order.get_status_display }}
-            </p>
+        {% for order in orders %}
 
-            <a href="{% url 'order_confirmation' order.id %}">
-                View Order Details
-            </a>
+        <div class="order-history-card">
+
+            <div class="order-card-top">
+
+                <div>
+                    <span class="order-card-label">ORDER NUMBER</span>
+                    <h2>#{{ order.id }}</h2>
+                </div>
+
+                <div class="order-history-status">
+                    {{ order.get_status_display }}
+                </div>
+
+            </div>
+
+            <div class="order-card-information">
+
+                <div class="order-information-item">
+                    <span>Order Date</span>
+                    <strong>
+                        {{ order.created_at|date:"d M Y, h:i A" }}
+                    </strong>
+                </div>
+
+                <div class="order-information-item">
+                    <span>Total Amount</span>
+                    <strong class="order-history-total">
+                        Rs. {{ order.total_amount }}
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="order-card-bottom">
+
+                <span>Thank you for shopping with ShopSphere.</span>
+
+                <a href="{% url 'order_confirmation' order.id %}">
+                    View Order Details →
+                </a>
+
+            </div>
 
         </div>
 
-        <hr>
+        {% endfor %}
 
-    {% endfor %}
+    </div>
 
-{% else %}
+    {% else %}
 
-    <p>You haven't placed any orders yet.</p>
+    <div class="order-history-empty">
 
-{% endif %}
+        <div class="empty-orders-icon">
+            <icon name="package" size="2xl" />
+        </div>
+
+        <h2>No Orders Yet</h2>
+
+        <p>
+            You haven't placed any orders yet.
+            Your future purchases will appear here.
+        </p>
+
+        <a href="{% url 'product_list' %}">
+            Explore Products →
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
 
 {% endblock %}
