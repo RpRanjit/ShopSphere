@@ -1,129 +1,109 @@
-
 {% extends 'products/base.html' %}
-
 {% block title %}
     ShopSphere | Products
-{% endblock %}
-
+{%endblock %}
 {% block content %}
 <h2>Search Products</h2>
 
-<form method="GET" action="{% url 'product_list' %}">
+<form method="GET" action="{% url 'product_list' %}" class="search-form">
+  <input
+    type="text"
+    name="q"
+    placeholder="Search products..."
+    value="{{ search_query|default:'' }}"
+  />
 
-    <input
-        type="text"
-        name="q"
-        placeholder="Search products..."
-        value="{{ search_query|default:'' }}"
-    >
-
-    {% if selected_category %}
-     <input
-     type="hidden"
-     name="category"
-     value="{{ selected_category }}"
-     >
-     {% endif %}
-    <button type="submit">
-        Search
-    </button>
-
+  {% if selected_category %}
+  <input type="hidden" name="category" value="{{ selected_category }}" />
+  {% endif %}
+  <button type="submit">Search</button>
 </form>
 
 <h2>Sort Products</h2>
 
-<form methos="GET" action="{% url 'product_list' %}">
+<form methos="GET" action="{% url 'product_list' %}" class="sort-form">
+  {% if search_query %}
+  <input type="hidden" name="q" value="{{ search_query }}" />
+  {% endif %} {% if selected_category %}
+  <input type="hidden" name="category" value="{{ selected_category }}" />
+  {% endif %}
 
-   {% if search_query %}
-   <input
-   type="hidden"
-   name="q"
-   value="{{ search_query }}">
-   {% endif %}
+  <select name="sort">
+    <option value="name" {% if sort_by == "name" %}selected{% endif %}>
+      Name: A to Z
+    </option>
 
-   {% if selected_category %}
-   <input
-   type="hidden"
-   name="category"
-   value="{{ selected_category }}">
-   {% endif %}
+    <option
+      value="price_low"
+      {%
+      if
+      sort_by=""
+      ="price_low"
+      %}selected{%
+      endif
+      %}
+    >
+      Price: Low to High
+    </option>
 
-   <select name="sort">
+    <option
+      value="price_high"
+      {%
+      if
+      sort_by=""
+      ="price_high"
+      %}selected{%
+      endif
+      %}
+    >
+      Price: High to Low
+    </option>
 
-        <option value="name"
-            {% if sort_by == 'name' %}selected{% endif %}>
-            Name: A to Z
-        </option>
+    <option value="newest" {% if sort_by == "newest" %}selected{% endif %}>
+      Newest First
+    </option>
+  </select>
 
-        <option value="price_low"
-            {% if sort_by == 'price_low' %}selected{% endif %}>
-            Price: Low to High
-        </option>
-
-        <option value="price_high"
-            {% if sort_by == 'price_high' %}selected{% endif %}>
-            Price: High to Low
-        </option>
-
-        <option value="newest"
-            {% if sort_by == 'newest' %}selected{% endif %}>
-            Newest First
-        </option>
-
-    </select>
-
-    <button type="submit">
-        Sort
-    </button>
+  <button type="submit">Sort</button>
 </form>
 <h2>Shop by Category</h2>
 
-<div>
+<div class="category-list">
+  <a href="{% url 'product_list' %}"> All Products </a>
 
-    <a href="{% url 'product_list' %}">
-        All Products
-    </a>
+  | {% for category in categories %}
 
-    |
+  <a href="{% url 'product_list' %}?category={{ category.id }}">
+    {{ category.name }}
+  </a>
 
-    {% for category in categories %}
+  | {% empty %}
 
-        <a href="{% url 'product_list' %}?category={{ category.id }}">
-            {{ category.name }}
-        </a>
+  <p>No categories available.</p>
 
-        |
-
-    {% empty %}
-
-        <p>No categories available.</p>
-
-    {% endfor %}
-
+  {% endfor %}
 </div>
 
-<hr>
+<hr />
 
 <h2>Our Products</h2>
+<div class="product-grid">
+  {% for product in products %}
 
-    {% for product in products %}
-
-<div>
-
+  <div class="product-card">
     {% if product.image %}
 
-        <img
-            src="{{ product.image.url }}"
-            alt="{{ product.name }}"
-            width="250"
-        >
+    <img
+      class="product-image"
+      src="{{ product.image.url }}"
+      alt="{{ product.name }}"
+      width="250"
+    />
 
     {% endif %}
 
     <h3>
-        <a href="{% url 'product_detail' product.id %}">
-            {{ product.name }}
-        </a>
+      <a href="{% url 'product_detail' product.id %}"> {{ product.name }} </a>
     </h3>
 
     <p>{{ product.description }}</p>
@@ -132,19 +112,22 @@
 
     <p>Available Stock: {{ product.stock }}</p>
 
+    <form
+      class="add-to-cart-form"
+      method="POST"
+      action="{% url 'add_to_cart' product.id %}"
+    >
+      {% csrf_token %}
+      <button type="submit" class="add-to-cart-button">Add to Cart</button>
+    </form>
+  </div>
+  <hr />
+
+  {% empty %}
+
+  <p>No products are currently available.</p>
+
+  {% endfor %}
 </div>
-
-<form method="POST" action="{% url 'add_to_cart' product.id %}" >
-    {% csrf_token %}
-    <button type="submit">Add to Cart</button>
-</form>
-
-        <hr>
-
-    {% empty %}
-
-        <p>No products are currently available.</p>
-
-    {% endfor %}
 
 {% endblock %}
