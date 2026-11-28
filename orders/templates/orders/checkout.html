@@ -1,9 +1,9 @@
 {% extends 'products/base.html' %}
 
 {% block content %}
-
+<div class="checkout-container">
 <h1>Checkout</h1>
-<h2>Your Order</h2>
+<h2 class="checkout-section-title">Your Order</h2>
 
 {% for item in checkout_items %}
     <p>
@@ -17,7 +17,7 @@
 
 <h3>Total: Rs. {{ total_amount }}</h3>
 
-<form method="POST">
+<form method="POST" class="checkout-form">
     {% csrf_token %}
 
     {{ form.as_p }}
@@ -26,3 +26,4 @@
 </form>
 
 {% endblock %}
+</div>

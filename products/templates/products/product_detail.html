@@ -1,6 +1,10 @@
-{% extends 'products/base.html' %} {% block title %} {{ product.name }} |
-ShopSphere {% endblock %} {% block content %} {% if product.image %}
-
+{% extends 'products/base.html' %}
+{% block title %}
+{{ product.name }} | ShopSphere
+{% endblock %}
+{% block content %}
+<div class="product-detail">
+{% if product.image %}
 <img src="{{ product.image.url }}" alt="{{ product.name }}" width="400" />
 
 {% endif %}
@@ -25,4 +29,5 @@ ShopSphere {% endblock %} {% block content %} {% if product.image %}
 
 <a href="{% url 'product_list' %}"> Back to Products </a>
 
-{% endblock %}
+{% endblock %}\
+</div>
